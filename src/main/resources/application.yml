@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+    jpa:
+        database: MYSQL
+        hibernate:
+            ddl-auto: update
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/custer
+        username: root
+        password: root
+        name: custer
+        driver-class-name: com.mysql.jdbc.Driver
