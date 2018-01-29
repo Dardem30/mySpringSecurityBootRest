@@ -1,5 +1,6 @@
 package com.example.myspringsecurityboot.config;
 
+import com.example.myspringsecurityboot.config.service.jwt.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -22,14 +24,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 private PasswordEncoder passwordEncoder;
    @Autowired
    private UserDetailsService userDetailsService;
-   private static String REALM="Hello";
+   @Autowired
+   private TokenAuthenticationService tokenAuthenticationService;
+   private static String REALM="MY_TEST_REALM";
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeRequests().antMatchers("/login").permitAll()
-                .anyRequest().authenticated().
-                and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/").hasAuthority("ROLE_ADMIN")
+                .and()
+                .addFilterBefore(new AuthenticationTokenFilter(tokenAuthenticationService),
+                        UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
+//                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
