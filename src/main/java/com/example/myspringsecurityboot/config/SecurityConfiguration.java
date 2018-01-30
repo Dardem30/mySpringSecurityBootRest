@@ -20,8 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-@Autowired
-private PasswordEncoder passwordEncoder;
    @Autowired
    private UserDetailsService userDetailsService;
    @Autowired
@@ -31,8 +29,9 @@ private PasswordEncoder passwordEncoder;
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/rest/**").authenticated()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/").hasAuthority("ROLE_ADMIN")
+         //       .antMatchers("/").hasAuthority("ROLE_ADMIN")
                 .and()
                 .addFilterBefore(new AuthenticationTokenFilter(tokenAuthenticationService),
                         UsernamePasswordAuthenticationFilter.class)

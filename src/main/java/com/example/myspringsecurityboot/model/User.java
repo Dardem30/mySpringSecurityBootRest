@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 @Entity
 @Table(name = "user")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,7 +47,6 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
@@ -56,12 +55,6 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
     public String getPassword() {
         return password;
     }
@@ -78,7 +71,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    @Override
     public boolean isAccountNonExpired() {
         return accountNonExpired;
     }
@@ -87,7 +79,6 @@ public class User implements UserDetails {
         this.accountNonExpired = accountNonExpired;
     }
 
-    @Override
     public boolean isAccountNonLocked() {
         return accountNonLocked;
     }
@@ -96,7 +87,6 @@ public class User implements UserDetails {
         this.accountNonLocked = accountNonLocked;
     }
 
-    @Override
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
@@ -105,7 +95,6 @@ public class User implements UserDetails {
         this.credentialsNonExpired = credentialsNonExpired;
     }
 
-    @Override
     public boolean isEnabled() {
         return enabled;
     }

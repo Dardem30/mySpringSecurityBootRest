@@ -1,12 +1,13 @@
 package com.example.myspringsecurityboot.config.service.jwt;
 
-import com.example.myspringsecurityboot.model.User;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -38,17 +39,18 @@ public class DefaultTokenService implements TokenService {
             return null;
         }
 
-        final Optional<User> user = Optional.of((User) userDetailsService.loadUserByUsername(username));
-
+//        final Optional<User> user = Optional.of((User) userDetailsService.loadUserByUsername(username));
+        UserDetails userDetails= userDetailsService.loadUserByUsername(username);
+        User user= (User) userDetails;
         final Map<String, Object> token = new HashMap<>();
 
-        if (password.equals(user.get().getPassword())) {
+        if (password.equals(user.getPassword())) {
 
             final Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR, expirationTime);
-            token.put("authorityType", String.valueOf(user.get().getAuthorities()));
-            token.put("userId", user.get().getId());
-            token.put("username", user.get().getUsername());
+            token.put("authorityType", String.valueOf(user.getAuthorities()));
+//            token.put("userId", user.getId());
+            token.put("username", user.getUsername());
             token.put("validateTime", calendar.getTime());
 
 
